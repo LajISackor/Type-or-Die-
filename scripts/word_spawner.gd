@@ -22,7 +22,7 @@ var active_word_texts: Array[String] = []
 var hard_word_chance: float = 0.0  # increases over time
 
 func _ready():
-	screen_width = get_viewport_rect().size.x
+	screen_width = get_viewport().get_visible_rect().size.x
 	_load_words("res://word_lists/default.txt")
 	_setup_timer()
 

@@ -13,9 +13,9 @@ var popups: Array = []
 var particles: Array = []
 
 func _ready():
-	# Create camera for screen shake
 	camera = Camera2D.new()
 	camera.name = "GameCamera"
+	camera.position = Vector2(400, 300)
 	camera.make_current()
 	get_parent().add_child.call_deferred(camera)
 

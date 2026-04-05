@@ -26,7 +26,7 @@ var combo_timeout: float = 3.0  # seconds before combo resets
 @onready var score_manager: Node = $ScoreManager
 @onready var hud: CanvasLayer = $HUD
 @onready var vfx: Node2D = $VFXManager
-@onready var background: Node2D = $BackgroundFX
+@onready var background = $BackgroundFX
 
 func _ready():
 	# Connect score manager signals
