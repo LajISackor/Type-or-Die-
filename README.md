@@ -30,7 +30,11 @@ Built with **Godot 4.x** | GDScript
 
 | Name | Role | GitHub Username |
 |------|------|-----------------|
+<<<<<<< HEAD
 | **Laji** | Team Lead / Core Systems | `@TODO` |
+=======
+| **Laji** | Team Lead / Core Systems | `LajISackor` |
+>>>>>>> d84283e9e7abe703ff63e55448a0923ae1155d41
 | **Joel** | Gameplay / UI | `@TODO` |
 | **Mesa** | Assets / Polish | `@TODO` |
 
