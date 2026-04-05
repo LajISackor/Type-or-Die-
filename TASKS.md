@@ -10,22 +10,22 @@
 
 ## 🔴 Phase 1 — Core MVP (Week 1)
 
-### Laji (Team Lead / Core Systems)
-- [ ] **Task 1: Game Manager** — `game_manager.gd` + `game.tscn`
+### Laji (Team Lead / Core Systems) ✅ COMPLETE
+- [x] **Task 1: Game Manager** — `game_manager.gd` + `game.tscn`
   - Create the main game scene
   - Manage game states: PLAYING, PAUSED, GAME_OVER
   - Connect word spawner, input handler, and score manager together
   - Handle pause (Escape key) and restart logic
   - *Branch:* `feature/game-manager`
 
-- [ ] **Task 2: Word Spawner** — `word_spawner.gd`
+- [x] **Task 2: Word Spawner** — `word_spawner.gd`
   - Load words from `word_lists/default.txt`
   - Spawn `falling_word` scenes at random X positions along the top
   - Use a Timer node to control spawn rate
   - Start with one word every 2–3 seconds
   - *Branch:* `feature/word-spawner`
 
-- [ ] **Task 3: Typing Input System** — `typing_input.gd`
+- [x] **Task 3: Typing Input System** — `typing_input.gd`
   - Capture keyboard input character by character
   - Match typed text against active falling words
   - Highlight the word currently being targeted
@@ -55,7 +55,7 @@
   - Clean, readable layout
   - *Branch:* `ui/main-menu`
 
-### Mesa (Assets / Polish)
+### Sarah (Assets / Polish)
 - [ ] **Task 7: Game Over Screen** — `game_over.gd` + `game_over.tscn`
   - Show "GAME OVER" text
   - Display final score
@@ -99,7 +99,7 @@ When creating issues on GitHub, use this format:
 
 **Title:** `[TASK #] Brief description`
 **Labels:** `feature`, `ui`, `asset`, `bug`, `enhancement`
-**Assignee:** Team member's GitHub username
+**Assignee:** Team member's GitHub username (`LajISackor`, `Joelmesa`, or `sarah-jorgensen1`)
 
 Example:
 > **Title:** [Task 4] Falling Word Scene

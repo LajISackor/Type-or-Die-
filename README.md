@@ -2,7 +2,7 @@
 
 > Words fall from the top. Type them before they hit the ground. Miss too many and it's game over!
 
-Built with **Godot 4.x** | GDScript
+Built with **Godot Engine 4.6.2** | GDScript
 
 ---
 
@@ -30,29 +30,23 @@ Built with **Godot 4.x** | GDScript
 
 | Name | Role | GitHub Username |
 |------|------|-----------------|
-<<<<<<< HEAD
-| **Laji** | Team Lead / Core Systems | `@TODO` |
-=======
-| **Laji** | Team Lead / Core Systems | `LajISackor` |
->>>>>>> d84283e9e7abe703ff63e55448a0923ae1155d41
-| **Joel** | Gameplay / UI | `@TODO` |
-| **Mesa** | Assets / Polish | `@TODO` |
-
-> **TODO:** Replace `@TODO` with actual GitHub usernames after team members join.
+| **Laji** | Team Lead / Core Systems | [@LajISackor](https://github.com/LajISackor) |
+| **Joel** | Gameplay / UI | [@Joelmesa](https://github.com/Joelmesa) |
+| **Sarah** | Assets / Polish | [@sarah-jorgensen1](https://github.com/sarah-jorgensen1) |
 
 ---
 
 ## 🛠️ Setup Instructions
 
 ### Prerequisites
-1. Install [Godot 4.x](https://godotengine.org/download/) (standard version, not .NET)
+1. Install [Godot 4.6.2](https://godotengine.org/download/) (standard version, not .NET)
 2. Install [Git](https://git-scm.com/downloads)
 3. Have a GitHub account
 
 ### Getting Started
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/type-or-die.git
+git clone https://github.com/LajISackor/Type-or-Die-.git
 
 # Open in Godot
 # 1. Launch Godot
