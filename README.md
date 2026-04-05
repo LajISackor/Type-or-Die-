@@ -2,7 +2,7 @@
 
 > Words fall from the top. Type them before they hit the ground. Miss too many and it's game over!
 
-Built with **Godot 4.x** | GDScript
+Built with **Godot 4.6.2| GDScript
 
 ---
 
