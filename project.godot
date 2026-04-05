@@ -1,31 +1,13 @@
 ; Engine configuration file.
 ; It's best edited using the editor UI and not directly,
-<<<<<<< HEAD
-; since the parameters that go here are not all obvious.
-;
-; Format:
-;   [section] ; section goes between []
-;   param=value ; assign values to parameters
-
-config_version=5
-
-[animation]
-
-compatibility/default_parent_skeleton_in_mesh_instance_3d=true
-=======
 ; but it can also be edited manually if needed.
->>>>>>> d84283e9e7abe703ff63e55448a0923ae1155d41
 
 [application]
 
 config/name="Type or Die"
 config/description="A typing defense game - type falling words before they hit the ground!"
 run/main_scene="res://scenes/main_menu.tscn"
-<<<<<<< HEAD
-config/features=PackedStringArray("4.6")
-=======
 config/features=PackedStringArray("4.x")
->>>>>>> d84283e9e7abe703ff63e55448a0923ae1155d41
 config/icon="res://icon.svg"
 
 [display]
@@ -33,10 +15,7 @@ config/icon="res://icon.svg"
 window/size/viewport_width=800
 window/size/viewport_height=600
 window/stretch/mode="canvas_items"
-<<<<<<< HEAD
-=======
 window/stretch/aspect="keep"
->>>>>>> d84283e9e7abe703ff63e55448a0923ae1155d41
 
 [input]
 

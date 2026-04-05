@@ -1,5 +1,5 @@
 extends Node2D
-## Game Manager — Controls the main game loop and state.
+## Game Manager — Controls the main game loop, state, and visual effects.
 ## Assigned to: Laji (COMPLETE)
 
 enum GameState { PLAYING, PAUSED, GAME_OVER }
@@ -10,16 +10,23 @@ var current_state: GameState = GameState.PLAYING
 var base_spawn_interval: float = 2.5
 var min_spawn_interval: float = 0.6
 var difficulty_timer: float = 0.0
-var difficulty_ramp_interval: float = 15.0  # ramp up every 15 seconds
+var difficulty_ramp_interval: float = 15.0
 var base_fall_speed: float = 60.0
 var current_fall_speed: float = 60.0
 var fall_speed_increment: float = 8.0
 var level: int = 1
 
+# Combo tracking
+var combo_count: int = 0
+var combo_timer: float = 0.0
+var combo_timeout: float = 3.0  # seconds before combo resets
+
 @onready var word_spawner: Node = $WordSpawner
 @onready var typing_input: Node = $TypingInput
 @onready var score_manager: Node = $ScoreManager
 @onready var hud: CanvasLayer = $HUD
+@onready var vfx: Node2D = $VFXManager
+@onready var background: Node2D = $BackgroundFX
 
 func _ready():
 	# Connect score manager signals
@@ -60,6 +67,12 @@ func _process(delta):
 		pause_game()
 		return
 	
+	# Combo timeout
+	if combo_count > 0:
+		combo_timer += delta
+		if combo_timer >= combo_timeout:
+			combo_count = 0
+	
 	# Difficulty ramp over time
 	difficulty_timer += delta
 	if difficulty_timer >= difficulty_ramp_interval:
@@ -71,6 +84,8 @@ func start_game():
 	score_manager.reset()
 	typing_input.clear_all()
 	level = 1
+	combo_count = 0
+	combo_timer = 0.0
 	current_fall_speed = base_fall_speed
 	difficulty_timer = 0.0
 	word_spawner.fall_speed = current_fall_speed
@@ -99,14 +114,20 @@ func game_over():
 	word_spawner.stop_spawning()
 	typing_input.clear_all()
 	
-	# Remove all remaining falling words
+	# Big screen shake for dramatic game over
+	vfx.shake_screen(15.0)
+	
+	# Explode all remaining words in red
 	for word_node in get_tree().get_nodes_in_group("falling_words"):
+		vfx.spawn_miss_effect(word_node.global_position)
 		word_node.queue_free()
 	
-	# Show game over via HUD overlay
+	# Show game over via HUD overlay (with slight delay for drama)
 	var stats = score_manager.get_stats()
 	stats["level"] = level
-	hud.show_game_over(stats)
+	
+	var timer = get_tree().create_timer(0.5)
+	timer.timeout.connect(func(): hud.show_game_over(stats))
 
 func restart_game():
 	get_tree().paused = false
@@ -131,6 +152,10 @@ func _increase_difficulty():
 	
 	# Update HUD
 	hud.update_level(level)
+	
+	# Level up visual effect
+	vfx.spawn_level_up_effect()
+	vfx.shake_screen(4.0)
 
 # --- Signal Callbacks ---
 
@@ -140,19 +165,88 @@ func _on_word_spawned(word_node: Node2D):
 	word_node.word_missed.connect(_on_word_missed)
 
 func _on_word_destroyed(word_text: String, points: int):
-	score_manager.add_score(points)
+	# Combo system
+	combo_count += 1
+	combo_timer = 0.0
+	
+	# Bonus points for combos
+	var combo_multiplier = 1.0
+	if combo_count >= 3:
+		combo_multiplier = 1.5
+	if combo_count >= 5:
+		combo_multiplier = 2.0
+	if combo_count >= 10:
+		combo_multiplier = 3.0
+	
+	var final_points = int(points * combo_multiplier)
+	score_manager.add_score(final_points)
+	
+	# VFX — find where the word was and spawn effects there
+	# The word will have been freed, so we use last known position
+	var effect_pos = _get_last_word_position(word_text)
+	
+	# Green explosion with size based on word length
+	var particle_count = 12 + word_text.length() * 2
+	var colors = [
+		Color(0.0, 1.0, 0.5),    # green
+		Color(0.2, 1.0, 0.8),    # cyan-green
+		Color(0.0, 0.9, 0.3),    # bright green
+	]
+	var explosion_color = colors[randi() % colors.size()]
+	
+	if combo_count >= 5:
+		explosion_color = Color(1.0, 0.85, 0.0)  # gold for big combos
+		particle_count += 10
+	
+	vfx.spawn_explosion(effect_pos, explosion_color, particle_count)
+	
+	# Score popup
+	var popup_text = "+" + str(final_points)
+	if combo_count >= 3:
+		popup_text += " x" + str(combo_count)
+	vfx.spawn_score_popup(effect_pos, popup_text, explosion_color)
+	
+	# Small screen shake for satisfying feedback
+	vfx.shake_screen(2.0 + word_text.length() * 0.3)
 
 func _on_word_missed(word_text: String):
+	combo_count = 0  # reset combo on miss
 	score_manager.take_damage(1)
+	
+	# Red miss effect at the bottom of screen
+	var screen_w = get_viewport_rect().size.x
+	var screen_h = get_viewport_rect().size.y
+	var miss_pos = Vector2(randf() * screen_w, screen_h - 20)
+	vfx.spawn_miss_effect(miss_pos)
 
 func _on_score_changed(new_score: int):
 	hud.update_score(new_score)
 
 func _on_health_changed(new_health: int):
 	hud.update_health(new_health)
-
+	
+	# Flash red when taking damage
+	if new_health <= 2:
+		vfx.shake_screen(10.0)
+	
 func _on_health_depleted():
 	game_over()
 
 func _on_typed_text_changed(text: String):
 	hud.update_typing(text)
+
+# --- Helpers ---
+
+var _last_word_positions: Dictionary = {}
+
+func _track_word_position(word_node: Node2D):
+	## Called each frame to track word positions for VFX after they're freed
+	if is_instance_valid(word_node):
+		_last_word_positions[word_node.word_text] = word_node.global_position
+
+func _get_last_word_position(word_text: String) -> Vector2:
+	if word_text in _last_word_positions:
+		var pos = _last_word_positions[word_text]
+		_last_word_positions.erase(word_text)
+		return pos
+	return Vector2(400, 300)  # fallback center

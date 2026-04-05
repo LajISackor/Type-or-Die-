@@ -1,7 +1,7 @@
 extends Node
 ## Score & Health Manager — Tracks points, health, and stats.
-## Assigned to: Mesa
-## STATUS: Working base — Mesa to add combo system, bonus scoring, etc.
+## Assigned to: Sarah
+## STATUS: Working base — Sarah to add combo system, bonus scoring, etc.
 
 signal score_changed(new_score: int)
 signal health_changed(new_health: int)

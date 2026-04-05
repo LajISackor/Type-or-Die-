@@ -1,8 +1,8 @@
 extends Control
 ## Game Over Screen — Standalone version if needed.
-## Assigned to: Mesa
+## Assigned to: Sarah
 ## STATUS: Currently the HUD handles game over as an overlay.
-## Mesa can convert this to a standalone scene if preferred.
+## Sarah can convert this to a standalone scene if preferred.
 
 func _ready():
 	pass
