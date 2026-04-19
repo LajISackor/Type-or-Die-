@@ -1,7 +1,4 @@
 extends CanvasLayer
-## HUD — Displays score, health, typed text, pause screen, and game over overlay.
-## Assigned to: Joel
-## STATUS: Working base — Joel to add visual polish, hearts, animations
 
 signal restart_requested()
 signal menu_requested()
@@ -14,11 +11,13 @@ var level_label: Label
 var pause_panel: PanelContainer
 var game_over_panel: PanelContainer
 
+var _last_health: int = 5
+
 func _ready():
 	_build_hud()
 
 func _build_hud():
-	# --- Top bar: Score and Health ---
+	# --- Top bar ---
 	var top_bar = HBoxContainer.new()
 	top_bar.name = "TopBar"
 	top_bar.anchors_preset = Control.PRESET_TOP_WIDE
@@ -27,15 +26,15 @@ func _build_hud():
 	top_bar.offset_right = -10.0
 	top_bar.offset_top = 5.0
 	add_child(top_bar)
-	
+
 	health_label = Label.new()
 	health_label.name = "HealthLabel"
-	health_label.text = "HP: 5"
+	health_label.text = "♥ ♥ ♥ ♥ ♥"
 	health_label.add_theme_font_size_override("font_size", 22)
 	health_label.add_theme_color_override("font_color", Color.TOMATO)
 	health_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top_bar.add_child(health_label)
-	
+
 	level_label = Label.new()
 	level_label.name = "LevelLabel"
 	level_label.text = "Level 1"
@@ -44,7 +43,7 @@ func _build_hud():
 	level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	level_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top_bar.add_child(level_label)
-	
+
 	score_label = Label.new()
 	score_label.name = "ScoreLabel"
 	score_label.text = "Score: 0"
@@ -53,21 +52,37 @@ func _build_hud():
 	score_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	score_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top_bar.add_child(score_label)
-	
-	# --- Bottom: Typing display ---
+
+	# --- Typing bar background panel ---
+	var typing_panel = PanelContainer.new()
+	typing_panel.anchors_preset = Control.PRESET_BOTTOM_WIDE
+	typing_panel.offset_top = -60.0
+	typing_panel.offset_bottom = -8.0
+	typing_panel.offset_left = 40.0
+	typing_panel.offset_right = -40.0
+	var panel_style = StyleBoxFlat.new()
+	panel_style.bg_color = Color(0.0, 0.0, 0.0, 0.6)
+	panel_style.corner_radius_top_left = 8
+	panel_style.corner_radius_top_right = 8
+	panel_style.corner_radius_bottom_left = 8
+	panel_style.corner_radius_bottom_right = 8
+	panel_style.border_width_bottom = 2
+	panel_style.border_width_top = 2
+	panel_style.border_width_left = 2
+	panel_style.border_width_right = 2
+	panel_style.border_color = Color.CYAN
+	typing_panel.add_theme_stylebox_override("panel", panel_style)
+	add_child(typing_panel)
+
 	typing_label = Label.new()
 	typing_label.name = "TypingLabel"
 	typing_label.text = ""
-	typing_label.add_theme_font_size_override("font_size", 26)
+	typing_label.add_theme_font_size_override("font_size", 24)
 	typing_label.add_theme_color_override("font_color", Color.CYAN)
 	typing_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	typing_label.anchors_preset = Control.PRESET_BOTTOM_WIDE
-	typing_label.offset_top = -50.0
-	typing_label.offset_bottom = -10.0
-	typing_label.offset_left = 10.0
-	typing_label.offset_right = -10.0
-	add_child(typing_label)
-	
+	typing_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	typing_panel.add_child(typing_label)
+
 	# --- Pause overlay ---
 	pause_panel = _create_overlay_panel("PAUSED")
 	var pause_vbox = pause_panel.get_child(0)
@@ -84,21 +99,18 @@ func _build_hud():
 	pause_panel.visible = false
 	pause_panel.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(pause_panel)
-	
+
 	# --- Game Over overlay ---
 	game_over_panel = _create_overlay_panel("GAME OVER")
 	var go_vbox = game_over_panel.get_child(0)
-	
 	var stats_label = Label.new()
 	stats_label.name = "StatsLabel"
 	stats_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	stats_label.add_theme_font_size_override("font_size", 18)
 	go_vbox.add_child(stats_label)
-	
 	var spacer = Control.new()
 	spacer.custom_minimum_size = Vector2(0, 10)
 	go_vbox.add_child(spacer)
-	
 	var retry_btn = Button.new()
 	retry_btn.text = "Play Again"
 	retry_btn.pressed.connect(func(): restart_requested.emit())
@@ -115,18 +127,14 @@ func _build_hud():
 func _create_overlay_panel(title_text: String) -> PanelContainer:
 	var panel = PanelContainer.new()
 	panel.anchors_preset = Control.PRESET_FULL_RECT
-	
-	# Darken background
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color(0, 0, 0, 0.75)
 	panel.add_theme_stylebox_override("panel", style)
-	
 	var vbox = VBoxContainer.new()
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	vbox.anchors_preset = Control.PRESET_CENTER
 	vbox.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	panel.add_child(vbox)
-	
 	var title = Label.new()
 	title.name = "TitleLabel"
 	title.text = title_text
@@ -134,26 +142,27 @@ func _create_overlay_panel(title_text: String) -> PanelContainer:
 	title.add_theme_color_override("font_color", Color.RED)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(title)
-	
 	var spacer = Control.new()
 	spacer.custom_minimum_size = Vector2(0, 20)
 	vbox.add_child(spacer)
-	
 	return panel
 
-# --- Public update methods called by game_manager ---
+# --- Public update methods ---
 
 func update_score(value: int):
 	if score_label:
 		score_label.text = "Score: " + str(value)
+		_pulse(score_label, Color.YELLOW)
 
 func update_health(value: int):
 	if health_label:
-		# Show hearts instead of number
 		var hearts = ""
 		for i in range(value):
 			hearts += "♥ "
-		health_label.text = hearts.strip_edges() if hearts.length() > 0 else "♥ DEAD"
+		health_label.text = hearts.strip_edges() if hearts.length() > 0 else "DEAD"
+		if value < _last_health:
+			_flash(health_label, Color.RED)
+		_last_health = value
 
 func update_typing(text: String):
 	if typing_label:
@@ -165,6 +174,7 @@ func update_typing(text: String):
 func update_level(value: int):
 	if level_label:
 		level_label.text = "Level " + str(value)
+		_pulse(level_label, Color.GOLD)
 
 func show_pause():
 	pause_panel.visible = true
@@ -185,3 +195,18 @@ func hide_overlays():
 
 func hide_pause():
 	pause_panel.visible = false
+
+# --- Animation helpers ---
+
+func _pulse(node: Label, color: Color):
+	var tween = create_tween()
+	tween.tween_property(node, "scale", Vector2(1.3, 1.3), 0.1)
+	tween.tween_property(node, "scale", Vector2(1.0, 1.0), 0.1)
+	node.add_theme_color_override("font_color", color)
+	await get_tree().create_timer(0.2).timeout
+	node.add_theme_color_override("font_color", Color.WHITE)
+
+func _flash(node: Label, color: Color):
+	var tween = create_tween()
+	tween.tween_property(node, "modulate", color, 0.05)
+	tween.tween_property(node, "modulate", Color.WHITE, 0.3)
