@@ -20,6 +20,10 @@ run/main_scene="res://scenes/main_menu.tscn"
 config/features=PackedStringArray("4.6")
 config/icon="res://icon.svg"
 
+[audio]
+
+buses/default_bus_layout="uid://baodg42iy7knp"
+
 [display]
 
 window/size/viewport_width=800
