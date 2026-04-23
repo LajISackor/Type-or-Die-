@@ -28,6 +28,7 @@ var combo_timeout: float = 3.0  # seconds before combo resets
 @onready var vfx: Node2D = $VFXManager
 @onready var background = $BackgroundFX
 
+
 func _ready():
 	# Connect score manager signals
 	score_manager.score_changed.connect(_on_score_changed)
@@ -116,6 +117,9 @@ func game_over():
 	
 	# Big screen shake for dramatic game over
 	vfx.shake_screen(15.0)
+	
+	# Add dramatic ending sound effect
+	$GameOverSFX.play()
 	
 	# Explode all remaining words in red
 	for word_node in get_tree().get_nodes_in_group("falling_words"):
@@ -208,8 +212,11 @@ func _on_word_destroyed(word_text: String, points: int):
 	
 	# Small screen shake for satisfying feedback
 	vfx.shake_screen(2.0 + word_text.length() * 0.3)
+	
+	# Positive sound effect
+	$CompleteSFX.play()
 
-func _on_word_missed(word_text: String):
+func _on_word_missed(_word_text: String):
 	combo_count = 0  # reset combo on miss
 	score_manager.take_damage(1)
 	
@@ -229,11 +236,19 @@ func _on_health_changed(new_health: int):
 	if new_health <= 2:
 		vfx.shake_screen(10.0)
 	
+	# Negative sound effect when game not over
+	if new_health > 0:
+		$DamageSFX.play()
+	
 func _on_health_depleted():
 	game_over()
 
 func _on_typed_text_changed(text: String):
 	hud.update_typing(text)
+	
+	# Play type or click sound effect, except when resetting
+	if text != "":
+		$TypeSFX.play()
 
 # --- Helpers ---
 
