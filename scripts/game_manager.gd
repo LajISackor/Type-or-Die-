@@ -20,6 +20,7 @@ var level: int = 1
 var combo_count: int = 0
 var combo_timer: float = 0.0
 var combo_timeout: float = 3.0  # seconds before combo resets
+var highest_combo: int = 0
 
 @onready var word_spawner: Node = $WordSpawner
 @onready var typing_input: Node = $TypingInput
@@ -72,6 +73,9 @@ func _process(delta):
 	if combo_count > 0:
 		combo_timer += delta
 		if combo_timer >= combo_timeout:
+			# Update saved highest combo and reset
+			if combo_count > highest_combo:
+				highest_combo = combo_count
 			combo_count = 0
 	
 	# Difficulty ramp over time
@@ -87,6 +91,7 @@ func start_game():
 	level = 1
 	combo_count = 0
 	combo_timer = 0.0
+	highest_combo = 0
 	current_fall_speed = base_fall_speed
 	difficulty_timer = 0.0
 	word_spawner.fall_speed = current_fall_speed
@@ -130,6 +135,12 @@ func game_over():
 	var stats = score_manager.get_stats()
 	stats["level"] = level
 	
+	# Update saved highest combo
+	if combo_count > highest_combo:
+		highest_combo = combo_count
+		
+	stats["highest_combo"] = highest_combo
+	
 	var timer = get_tree().create_timer(0.5)
 	timer.timeout.connect(func(): hud.show_game_over(stats))
 
@@ -172,6 +183,8 @@ func _on_word_destroyed(word_text: String, points: int):
 	# Combo system
 	combo_count += 1
 	combo_timer = 0.0
+	
+	
 	
 	# Bonus points for combos
 	var combo_multiplier = 1.0
@@ -217,6 +230,10 @@ func _on_word_destroyed(word_text: String, points: int):
 	$CompleteSFX.play()
 
 func _on_word_missed(_word_text: String):
+	# Update saved highest combo
+	if combo_count > highest_combo:
+		highest_combo = combo_count
+		
 	combo_count = 0  # reset combo on miss
 	score_manager.take_damage(1)
 	
