@@ -20,6 +20,7 @@ var level: int = 1
 var combo_count: int = 0
 var combo_timer: float = 0.0
 var combo_timeout: float = 3.0  # seconds before combo resets
+var highest_combo: int = 0
 
 @onready var word_spawner: Node = $WordSpawner
 @onready var typing_input: Node = $TypingInput
@@ -27,6 +28,7 @@ var combo_timeout: float = 3.0  # seconds before combo resets
 @onready var hud: CanvasLayer = $HUD
 @onready var vfx: Node2D = $VFXManager
 @onready var background = $BackgroundFX
+
 
 func _ready():
 	# Connect score manager signals
@@ -71,6 +73,9 @@ func _process(delta):
 	if combo_count > 0:
 		combo_timer += delta
 		if combo_timer >= combo_timeout:
+			# Update saved highest combo and reset
+			if combo_count > highest_combo:
+				highest_combo = combo_count
 			combo_count = 0
 	
 	# Difficulty ramp over time
@@ -86,6 +91,7 @@ func start_game():
 	level = 1
 	combo_count = 0
 	combo_timer = 0.0
+	highest_combo = 0
 	current_fall_speed = base_fall_speed
 	difficulty_timer = 0.0
 	word_spawner.fall_speed = current_fall_speed
@@ -117,6 +123,9 @@ func game_over():
 	# Big screen shake for dramatic game over
 	vfx.shake_screen(15.0)
 	
+	# Add dramatic ending sound effect
+	$GameOverSFX.play()
+	
 	# Explode all remaining words in red
 	for word_node in get_tree().get_nodes_in_group("falling_words"):
 		vfx.spawn_miss_effect(word_node.global_position)
@@ -125,6 +134,12 @@ func game_over():
 	# Show game over via HUD overlay (with slight delay for drama)
 	var stats = score_manager.get_stats()
 	stats["level"] = level
+	
+	# Update saved highest combo
+	if combo_count > highest_combo:
+		highest_combo = combo_count
+		
+	stats["highest_combo"] = highest_combo
 	
 	var timer = get_tree().create_timer(0.5)
 	timer.timeout.connect(func(): hud.show_game_over(stats))
@@ -169,6 +184,8 @@ func _on_word_destroyed(word_text: String, points: int):
 	combo_count += 1
 	combo_timer = 0.0
 	
+	
+	
 	# Bonus points for combos
 	var combo_multiplier = 1.0
 	if combo_count >= 3:
@@ -208,8 +225,15 @@ func _on_word_destroyed(word_text: String, points: int):
 	
 	# Small screen shake for satisfying feedback
 	vfx.shake_screen(2.0 + word_text.length() * 0.3)
+	
+	# Positive sound effect
+	$CompleteSFX.play()
 
-func _on_word_missed(word_text: String):
+func _on_word_missed(_word_text: String):
+	# Update saved highest combo
+	if combo_count > highest_combo:
+		highest_combo = combo_count
+		
 	combo_count = 0  # reset combo on miss
 	score_manager.take_damage(1)
 	
@@ -229,11 +253,19 @@ func _on_health_changed(new_health: int):
 	if new_health <= 2:
 		vfx.shake_screen(10.0)
 	
+	# Negative sound effect when game not over
+	if new_health > 0:
+		$DamageSFX.play()
+	
 func _on_health_depleted():
 	game_over()
 
 func _on_typed_text_changed(text: String):
 	hud.update_typing(text)
+	
+	# Play type or click sound effect, except when resetting
+	if text != "":
+		$TypeSFX.play()
 
 # --- Helpers ---
 

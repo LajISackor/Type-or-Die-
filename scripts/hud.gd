@@ -101,7 +101,7 @@ func _build_hud():
 	add_child(pause_panel)
 
 	# --- Game Over overlay ---
-	game_over_panel = _create_overlay_panel("GAME OVER")
+	game_over_panel = _create_overlay_panel(" GAME OVER ")
 	var go_vbox = game_over_panel.get_child(0)
 	var stats_label = Label.new()
 	stats_label.name = "StatsLabel"
@@ -184,10 +184,11 @@ func show_game_over(stats: Dictionary):
 	var stats_label = game_over_panel.get_child(0).get_node("StatsLabel")
 	if stats_label:
 		stats_label.text = "Score: " + str(stats.get("score", 0)) + "\n"
+		stats_label.text += "Level Reached: " + str(stats.get("level", 1)) + "\n"
 		stats_label.text += "Words Typed: " + str(stats.get("words_typed", 0)) + "\n"
 		stats_label.text += "Words Missed: " + str(stats.get("words_missed", 0)) + "\n"
 		stats_label.text += "Accuracy: " + str(snapped(stats.get("accuracy", 0), 0.1)) + "%\n"
-		stats_label.text += "Level Reached: " + str(stats.get("level", 1))
+		stats_label.text += "Highest Combo: " + str(stats.get("highest_combo", 0))
 
 func hide_overlays():
 	pause_panel.visible = false
