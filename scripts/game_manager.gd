@@ -31,8 +31,13 @@ var highest_combo: int = 0
 
 
 func _ready():
-	# Connect score manager signals
+	# Ready empty stats
 	StatsManager.reset()
+	
+	# Stop playing opening song
+	SoundManager.stop_opening()
+	
+	# Connect score manager signals
 	score_manager.score_changed.connect(_on_score_changed)
 	score_manager.health_changed.connect(_on_health_changed)
 	score_manager.health_depleted.connect(_on_health_depleted)
@@ -125,7 +130,7 @@ func game_over():
 	vfx.shake_screen(15.0)
 	
 	# Add dramatic ending sound effect
-
+	SoundManager.play_game_over()
 	
 	# Explode all remaining words in red
 	for word_node in get_tree().get_nodes_in_group("falling_words"):

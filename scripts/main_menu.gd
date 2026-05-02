@@ -7,6 +7,7 @@ var _words = ["fast", "type", "speed", "word", "fall", "die", "run", "key", "pre
 var _falling_labels = []
 
 func _ready():
+	SoundManager.play_opening()
 	_build_menu()
 	_start_title_animation()
 	_spawn_background_words()

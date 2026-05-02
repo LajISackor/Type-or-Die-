@@ -55,7 +55,7 @@ func show_results(stats: Dictionary):
 	
 	# Main Menu button
 	var menu_btn = ButtonCreator._make_button("☰  Main Menu", Color(0.0, 0.519, 0.837, 1.0))
-	menu_btn.pressed.connect(_on_play_again_pressed)
+	menu_btn.pressed.connect(_on_main_menu_pressed)
 	vbox.add_child(menu_btn)
 	
 	

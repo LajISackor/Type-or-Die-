@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://bsna7o61csw4t"]
+
+[ext_resource type="Script" uid="uid://duksxg20dd0mw" path="res://scripts/sound_manager.gd" id="1_p1llj"]
+[ext_resource type="AudioStream" uid="uid://cd5hafynspvmd" path="res://assets/gameover.mp3" id="1_rupev"]
+[ext_resource type="AudioStream" uid="uid://cyaoq18ccemxc" path="res://assets/moodmode-a-video-game-248444.mp3" id="3_rs7eg"]
+[ext_resource type="PackedScene" uid="uid://bf80hejyqtbvw" path="res://scenes/button_creator.tscn" id="4_rs7eg"]
+
+[node name="SoundManager" type="Node" unique_id=783843662]
+script = ExtResource("1_p1llj")
+
+[node name="GameOverSFX" type="AudioStreamPlayer" parent="." unique_id=1466079144]
+stream = ExtResource("1_rupev")
+volume_db = -12.0
+
+[node name="OpeningSong" type="AudioStreamPlayer" parent="." unique_id=1232542418]
+stream = ExtResource("3_rs7eg")
+volume_db = -24.0
+
+[node name="ButtonCreator" parent="." unique_id=405906097 instance=ExtResource("4_rs7eg")]
