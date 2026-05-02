@@ -100,30 +100,6 @@ func _build_hud():
 	pause_panel.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(pause_panel)
 
-	# --- Game Over overlay ---
-	game_over_panel = _create_overlay_panel(" GAME OVER ")
-	var go_vbox = game_over_panel.get_child(0)
-	var stats_label = Label.new()
-	stats_label.name = "StatsLabel"
-	stats_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	stats_label.add_theme_font_size_override("font_size", 18)
-	go_vbox.add_child(stats_label)
-	var spacer = Control.new()
-	spacer.custom_minimum_size = Vector2(0, 10)
-	go_vbox.add_child(spacer)
-	var retry_btn = Button.new()
-	retry_btn.text = "Play Again"
-	retry_btn.pressed.connect(func(): restart_requested.emit())
-	retry_btn.add_theme_font_size_override("font_size", 20)
-	go_vbox.add_child(retry_btn)
-	var menu_btn = Button.new()
-	menu_btn.text = "Main Menu"
-	menu_btn.pressed.connect(func(): menu_requested.emit())
-	menu_btn.add_theme_font_size_override("font_size", 20)
-	go_vbox.add_child(menu_btn)
-	game_over_panel.visible = false
-	add_child(game_over_panel)
-
 func _create_overlay_panel(title_text: String) -> PanelContainer:
 	var panel = PanelContainer.new()
 	panel.anchors_preset = Control.PRESET_FULL_RECT
@@ -178,17 +154,6 @@ func update_level(value: int):
 
 func show_pause():
 	pause_panel.visible = true
-
-func show_game_over(stats: Dictionary):
-	game_over_panel.visible = true
-	var stats_label = game_over_panel.get_child(0).get_node("StatsLabel")
-	if stats_label:
-		stats_label.text = "Score: " + str(stats.get("score", 0)) + "\n"
-		stats_label.text += "Level Reached: " + str(stats.get("level", 1)) + "\n"
-		stats_label.text += "Words Typed: " + str(stats.get("words_typed", 0)) + "\n"
-		stats_label.text += "Words Missed: " + str(stats.get("words_missed", 0)) + "\n"
-		stats_label.text += "Accuracy: " + str(snapped(stats.get("accuracy", 0), 0.1)) + "%\n"
-		stats_label.text += "Highest Combo: " + str(stats.get("highest_combo", 0))
 
 func hide_overlays():
 	pause_panel.visible = false

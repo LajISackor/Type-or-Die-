@@ -68,46 +68,14 @@ func _build_menu():
 	vbox.add_child(spacer)
 
 	# Start button
-	var start_btn = _make_button("▶  Start Game", Color(0.1, 0.6, 0.2))
+	var start_btn = ButtonCreator._make_button("▶  Start Game", Color(0.1, 0.6, 0.2))
 	start_btn.pressed.connect(_on_start_pressed)
 	vbox.add_child(start_btn)
 
 	# Quit button
-	var quit_btn = _make_button("✕  Quit", Color(0.5, 0.1, 0.1))
+	var quit_btn = ButtonCreator._make_button("✕  Quit", Color(0.5, 0.1, 0.1))
 	quit_btn.pressed.connect(_on_quit_pressed)
 	vbox.add_child(quit_btn)
-
-func _make_button(text: String, color: Color) -> Button:
-	var btn = Button.new()
-	btn.text = text
-	btn.add_theme_font_size_override("font_size", 24)
-	btn.custom_minimum_size = Vector2(280, 55)
-	var normal_style = StyleBoxFlat.new()
-	normal_style.bg_color = color
-	normal_style.corner_radius_top_left = 8
-	normal_style.corner_radius_top_right = 8
-	normal_style.corner_radius_bottom_left = 8
-	normal_style.corner_radius_bottom_right = 8
-	normal_style.border_width_bottom = 2
-	normal_style.border_width_top = 2
-	normal_style.border_width_left = 2
-	normal_style.border_width_right = 2
-	normal_style.border_color = color.lightened(0.3)
-	btn.add_theme_stylebox_override("normal", normal_style)
-	var hover_style = StyleBoxFlat.new()
-	hover_style.bg_color = color.lightened(0.2)
-	hover_style.corner_radius_top_left = 8
-	hover_style.corner_radius_top_right = 8
-	hover_style.corner_radius_bottom_left = 8
-	hover_style.corner_radius_bottom_right = 8
-	hover_style.border_width_bottom = 2
-	hover_style.border_width_top = 2
-	hover_style.border_width_left = 2
-	hover_style.border_width_right = 2
-	hover_style.border_color = Color.WHITE
-	btn.add_theme_stylebox_override("hover", hover_style)
-	btn.add_theme_color_override("font_color", Color.WHITE)
-	return btn
 
 func _start_title_animation():
 	_title_index = 0

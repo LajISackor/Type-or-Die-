@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://86qvk07q0ao1" path="res://scripts/game_manager.gd" id="1"]
 [ext_resource type="Script" uid="uid://e4q1d5femfnc" path="res://scripts/word_spawner.gd" id="2"]
 [ext_resource type="Script" uid="uid://d3q2626u2ewdb" path="res://scripts/typing_input.gd" id="3"]
-[ext_resource type="Script" uid="uid://s7qagj5nomov" path="res://scripts/score_manager.gd" id="4"]
 [ext_resource type="Script" uid="uid://cl26k30tce54l" path="res://scripts/hud.gd" id="5"]
 [ext_resource type="Script" uid="uid://cn13wqbpwcd83" path="res://scripts/background_fx.gd" id="6"]
 [ext_resource type="Script" uid="uid://d1kmwl4xqoln0" path="res://scripts/vfx_manager.gd" id="7"]
@@ -23,9 +22,6 @@ script = ExtResource("2")
 
 [node name="TypingInput" type="Node" parent="." unique_id=680288924]
 script = ExtResource("3")
-
-[node name="ScoreManager" type="Node" parent="." unique_id=774168886]
-script = ExtResource("4")
 
 [node name="VFXManager" type="Node2D" parent="." unique_id=1236775302]
 script = ExtResource("7")
