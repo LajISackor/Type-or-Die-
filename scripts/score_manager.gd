@@ -14,6 +14,8 @@ var words_typed: int = 0
 var words_missed: int = 0
 var total_keystrokes: int = 0
 var correct_keystrokes: int = 0
+var level: int = 1
+var highest_combo = 0
 
 func _ready():
 	reset()
@@ -39,6 +41,12 @@ func take_damage(amount: int = 1):
 		health = 0
 		health_depleted.emit()
 
+func update_level(lvl: int):
+	level = lvl
+	
+func update_combo(combo: int):
+	highest_combo = combo
+
 func get_accuracy() -> float:
 	var total = words_typed + words_missed
 	if total == 0:
@@ -50,5 +58,7 @@ func get_stats() -> Dictionary:
 		"score": score,
 		"words_typed": words_typed,
 		"words_missed": words_missed,
-		"accuracy": get_accuracy()
+		"accuracy": get_accuracy(),
+		"highest_combo": highest_combo,
+		"level": level
 	}

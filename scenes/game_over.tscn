@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://1ukjptn0gv0n"]
+
+[ext_resource type="Script" uid="uid://ds8fp5hddro7d" path="res://scripts/game_over.gd" id="1_xeevv"]
+
+[node name="GameOver" type="Control" unique_id=1954931913]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_xeevv")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=1607239239]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0

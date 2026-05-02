@@ -22,9 +22,9 @@ var combo_timer: float = 0.0
 var combo_timeout: float = 3.0  # seconds before combo resets
 var highest_combo: int = 0
 
+@onready var score_manager: Node = StatsManager
 @onready var word_spawner: Node = $WordSpawner
 @onready var typing_input: Node = $TypingInput
-@onready var score_manager: Node = $ScoreManager
 @onready var hud: CanvasLayer = $HUD
 @onready var vfx: Node2D = $VFXManager
 @onready var background = $BackgroundFX
@@ -32,6 +32,7 @@ var highest_combo: int = 0
 
 func _ready():
 	# Connect score manager signals
+	StatsManager.reset()
 	score_manager.score_changed.connect(_on_score_changed)
 	score_manager.health_changed.connect(_on_health_changed)
 	score_manager.health_depleted.connect(_on_health_depleted)
@@ -124,7 +125,7 @@ func game_over():
 	vfx.shake_screen(15.0)
 	
 	# Add dramatic ending sound effect
-	$GameOverSFX.play()
+
 	
 	# Explode all remaining words in red
 	for word_node in get_tree().get_nodes_in_group("falling_words"):
@@ -133,16 +134,17 @@ func game_over():
 	
 	# Show game over via HUD overlay (with slight delay for drama)
 	var stats = score_manager.get_stats()
-	stats["level"] = level
+	score_manager.update_level(level)
 	
 	# Update saved highest combo
 	if combo_count > highest_combo:
 		highest_combo = combo_count
 		
 	stats["highest_combo"] = highest_combo
+	score_manager.update_combo(highest_combo)
 	
 	var timer = get_tree().create_timer(0.5)
-	timer.timeout.connect(func(): hud.show_game_over(stats))
+	timer.timeout.connect(func(): get_tree().change_scene_to_file("res://scenes/game_over.tscn"))
 
 func restart_game():
 	get_tree().paused = false
