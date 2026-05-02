@@ -11,3 +11,10 @@ script = ExtResource("1_xeevv")
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=928004430]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 0
+offset_right = 882.0
+offset_bottom = 667.0
+color = Color(0.039215688, 0.039215688, 0.12156863, 1)

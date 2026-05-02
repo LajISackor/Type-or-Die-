@@ -11,13 +11,6 @@ func _ready():
 	show_results(stats)
 
 func show_results(stats: Dictionary):
-	# Background color
-	var bg = ColorRect.new()
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.color = Color(0.04, 0.04, 0.12)
-	bg.anchors_preset = Control.PRESET_FULL_RECT
-	add_child(bg)
-
 	# Center container
 	var vbox = VBoxContainer.new()
 	vbox.name = "VBox"
@@ -56,20 +49,15 @@ func show_results(stats: Dictionary):
 	add_stat_row(stats_grid, "Highest Combo", str(stats.get("highest_combo", 0)), combo_hex, interval)
 	
 	# Play Again button
-	var play_again_btn = Button.new()
-	play_again_btn.text = "Play Again"
+	var play_again_btn = ButtonCreator._make_button("▶  Play Again", Color(0.1, 0.6, 0.2))
 	play_again_btn.pressed.connect(_on_play_again_pressed)
-	play_again_btn.add_theme_font_size_override("font_size", 24)
-	play_again_btn.custom_minimum_size = Vector2(250, 50)
 	vbox.add_child(play_again_btn)
 	
 	# Main Menu button
-	var menu_btn = Button.new()
-	menu_btn.text = "Main Menu"
-	menu_btn.pressed.connect(_on_main_menu_pressed)
-	menu_btn.add_theme_font_size_override("font_size", 24)
-	menu_btn.custom_minimum_size = Vector2(250, 50)
+	var menu_btn = ButtonCreator._make_button("☰  Main Menu", Color(0.0, 0.519, 0.837, 1.0))
+	menu_btn.pressed.connect(_on_play_again_pressed)
 	vbox.add_child(menu_btn)
+	
 	
 func add_stat_row(grid: GridContainer, label_name: String, value: String, start_color: Color, start_delay: float):
 	# The static label
